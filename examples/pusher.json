@@ -1,0 +1,35 @@
+{
+  "_comment": "A pusher config: the board's structure is yours; each `source` supplies one value. See docs/pushers.md.",
+
+  "board": "host-health",
+  "title": "Host health",
+  "subtitle": "polled from real sources — no agent attached",
+  "interval": 10,
+  "ttl": 300,
+  "tab": { "label": "host", "accent": "mint" },
+
+  "blocks": [
+    { "type": "heading", "id": "h", "text": "Polled from real sources",
+      "eyebrow": "every 10s" },
+
+    { "type": "text", "id": "t",
+      "text": "This board is written by examples/pusher.py. Kill the pusher and it freezes." },
+
+    { "type": "progress", "id": "disk", "label": "Disk (/)", "max": 100, "unit": "%",
+      "source": { "kind": "command", "argv": ["df", "-h", "/"],
+                  "extract": { "regex": "([0-9]+)%" } } },
+
+    { "type": "gauge", "id": "load", "label": "Load 1m", "max": 8.0, "color": "mint",
+      "source": { "kind": "file", "path": "/proc/loadavg",
+                  "extract": { "regex": "^([0-9.]+)" } } },
+
+    { "type": "stat", "id": "health", "label": "Backend /health",
+      "source": { "kind": "http", "url": "http://127.0.0.1:8470/health",
+                  "extract": { "path": "$.ok" } } },
+
+    { "type": "kv", "id": "where",
+      "items": [["host", "demo"], ["pusher", "examples/pusher.py"]] },
+
+    { "type": "log", "id": "log", "title": "poller.log", "lines": [] }
+  ]
+}

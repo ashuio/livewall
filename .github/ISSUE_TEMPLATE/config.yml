@@ -1,0 +1,7 @@
+# Blank issues are left ENABLED on purpose.
+#
+# Livewall is a small project with no Discussions forum, so a doc typo, a
+# setup question, or a report that is not quite a bug should not be blocked by
+# having to pick a template that does not fit. The bug and feature templates
+# cover the common paths; they are offered, not enforced.
+blank_issues_enabled: true

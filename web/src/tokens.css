@@ -1,0 +1,91 @@
+/* Daylight design tokens — the shared palette this UI renders with. Light is
+   :root; dark is [data-theme='dark']. The resolved preference is written to
+   <html data-theme> by the pre-paint script in index.html and by
+   src/livewall/theme.ts.
+
+   Accents (pink/lime/mint) stay pastel in BOTH themes on purpose — they are
+   dots/badges, not backgrounds. */
+
+:root {
+  color-scheme: light;
+
+  --paper: #fff9f0;
+  --surface: #ffffff;
+  --surface-soft: #f4eef9;
+  --ink: #292039;
+  --ink-muted: #685d76;
+  --violet: #5837c7;
+  --violet-soft: #eee7ff;
+  --pink: #ff87cd;
+  --lime: #e5f59b;
+  --mint: #d7f3e6;
+  --line: #ddd3e6;
+  --success-ink: #16634b;
+  --success-bg: #e5f7eb;
+  --warning-ink: #78510b;
+  --warning-bg: #fff1cc;
+  --error-ink: #ac2941;
+  --error-bg: #ffe9ed;
+
+  /* Ink that sits ON a violet fill (selected tab). Flips in dark mode because
+     dark violet is the lighter lavender #b7a2ff — white on it is unreadable. */
+  --on-violet: #ffffff;
+
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --radius-control: 12px;
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 4px 16px rgb(41 32 57 / 0.06);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-hover: 120ms;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --paper: #171225;
+  --surface: #1f1830;
+  --surface-soft: #261e3a;
+  --ink: #f6f1fb;
+  --ink-muted: #aca1c4;
+  --violet: #b7a2ff;
+  --violet-soft: #2d2552;
+  --pink: #ff87cd;
+  --lime: #e5f59b;
+  --mint: #d7f3e6;
+  --line: #373053;
+  --success-ink: #86e3bb;
+  --success-bg: #143528;
+  --warning-ink: #f4cd86;
+  --warning-bg: #3b2c11;
+  --error-ink: #ffa3b3;
+  --error-bg: #3f1723;
+
+  --on-violet: #171225;
+
+  --shadow-card: 0 4px 16px rgb(0 0 0 / 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: contain;
+}

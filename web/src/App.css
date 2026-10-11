@@ -1,0 +1,720 @@
+/* App shell — app bar, tab bar, scroll area, pull indicator. */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--paper);
+}
+
+/* ---------------------------------------------------------------- app bar */
+
+.appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--paper);
+  flex: none;
+}
+
+.appbar-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+}
+
+.appbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.appbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.appbar-status {
+  display: flex;
+  align-items: center;
+}
+
+.kiosk-exit {
+  color: var(--ink-muted);
+}
+
+.appbar-count {
+  color: var(--ink-muted);
+  font-size: 12.5px;
+  margin-right: 4px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease-out);
+}
+.icon-btn:hover {
+  background: var(--surface-soft);
+}
+.icon-btn-error {
+  color: var(--error-ink);
+}
+/* The connection indicator is a live status, not a control: keep the icon-btn
+   look but drop the click affordance and hover fill. */
+.icon-status {
+  cursor: default;
+}
+.icon-status:hover {
+  background: transparent;
+}
+
+/* -------------------------------------------------------------------- tabs */
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 12px 10px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  flex: none;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 9px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease-out);
+}
+
+.tab-selected {
+  background: var(--violet);
+  border-color: var(--violet);
+  color: var(--on-violet);
+}
+
+.tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.tab-label {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-track {
+  display: inline-block;
+  width: 40px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  overflow: hidden;
+  flex: none;
+}
+.tab-selected .tab-track {
+  background: color-mix(in srgb, var(--on-violet) 24%, transparent);
+}
+.tab-fill {
+  display: block;
+  height: 100%;
+  background: var(--violet);
+}
+.tab-selected .tab-fill {
+  background: var(--on-violet);
+}
+
+.tab-ind {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-muted);
+}
+.tab-selected .tab-ind {
+  color: color-mix(in srgb, var(--on-violet) 75%, transparent);
+}
+
+.tab-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+}
+.tab-selected .tab-badge {
+  background: color-mix(in srgb, var(--on-violet) 24%, transparent);
+  color: color-mix(in srgb, var(--on-violet) 75%, transparent);
+}
+
+/* A text cue that an error tab is in error (the chrome alone is colour):
+   the same tag the overview card shows, sized for the tab strip. */
+.tab-error-tag {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--error-ink);
+  color: var(--paper);
+}
+.tab-error.tab-selected .tab-error-tag {
+  background: var(--paper);
+  color: var(--error-ink);
+}
+
+/* An error board is alarmed regardless of its agent-chosen accent: red chrome,
+   a blinking dot, and the indicator the agent set (bar/pct/text) kept intact. */
+.tab-error {
+  background: var(--error-bg);
+  border-color: var(--error-ink);
+  color: var(--error-ink);
+}
+.tab-error.tab-selected {
+  background: var(--error-ink);
+  border-color: var(--error-ink);
+  color: var(--paper);
+}
+.tab-error .tab-dot {
+  animation: lw-stale-blink 900ms steps(2, jump-none) infinite;
+}
+.tab-error .tab-track {
+  background: color-mix(in srgb, var(--error-ink) 24%, transparent);
+}
+.tab-error .tab-fill {
+  background: var(--error-ink);
+}
+.tab-error .tab-ind,
+.tab-error .tab-badge {
+  color: var(--error-ink);
+}
+.tab-error.tab-selected .tab-track {
+  background: color-mix(in srgb, var(--paper) 30%, transparent);
+}
+.tab-error.tab-selected .tab-fill {
+  background: var(--paper);
+}
+.tab-error.tab-selected .tab-ind,
+.tab-error.tab-selected .tab-badge {
+  color: color-mix(in srgb, var(--paper) 80%, transparent);
+}
+
+/* ---------------------------------------------------- deep-link notice */
+
+/* A stale `?board=` falls back to the newest; this quiet strip says so. */
+.board-notice {
+  flex: none;
+  padding: 8px 14px;
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ------------------------------------------------------------- board area */
+
+.board-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.board {
+  padding: 14px 14px 28px;
+}
+
+/* Kiosk: one board, enlarged for a wall. `zoom` reflows (unlike a transform),
+   so the board scales as a unit without a horizontal scrollbar. */
+.board-kiosk {
+  zoom: 1.2;
+  padding: 20px 20px 48px;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 24px;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 15px;
+}
+
+/* ------------------------------------------------------ pull-to-refresh */
+
+.pull-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: height 160ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2.5px solid var(--line);
+  border-top-color: var(--violet);
+  display: inline-block;
+}
+.spinner.spinning {
+  animation: lw-spin 700ms linear infinite;
+}
+
+@keyframes lw-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The board renders its own block components; keep the default text colour so
+   unstyled text does not fall back to black. */
+.board {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------ freshness chip */
+
+.fresh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.fresh-chip-live {
+  background: var(--success-bg);
+  color: var(--success-ink);
+}
+.fresh-chip-stale {
+  background: var(--error-bg);
+  color: var(--error-ink);
+}
+/* TTL countdown: a subtle warning next to the chip, never a headline. */
+.ttl-countdown {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.fresh-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.fresh-chip-live .fresh-dot {
+  animation: lw-live-breathe 2.2s ease-in-out infinite;
+}
+@keyframes lw-live-breathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* --------------------------------------------------------- board area */
+
+/* Wraps the scroller for the board body. */
+.board-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Screen-reader-only: content announced to assistive tech, invisible on screen.
+   Used for the staleness live region now that the banner is gone. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes lw-stale-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* --------------------------------------------------------- error banner */
+
+/* A whole-board alarm strip at the top of the board view: not a chip. */
+.error-banner {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: var(--error-ink);
+  color: var(--paper);
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.error-banner-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+  animation: lw-stale-blink 900ms steps(2, jump-none) infinite;
+}
+
+/* -------------------------------------------------------- update pulse */
+
+.board-pulse {
+  animation: lw-board-pulse 900ms var(--ease-out);
+}
+@keyframes lw-board-pulse {
+  0% {
+    background-color: transparent;
+  }
+  25% {
+    background-color: color-mix(in srgb, var(--violet) 10%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+/* ------------------------------------------------------ board overview (U3) */
+
+/* The all-boards grid: a scale escape hatch for a cramped tab strip. Fixed so
+   it covers the whole app, above the stale overlay. */
+.overview-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px;
+  background: color-mix(in srgb, var(--ink) 45%, transparent);
+  overflow-y: auto;
+}
+
+.board-overview {
+  width: 100%;
+  max-width: 900px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+}
+
+.overview-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.overview-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+}
+.overview-count {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  background: var(--surface-soft);
+  border-radius: var(--radius-pill);
+  padding: 2px 9px;
+}
+.overview-close {
+  margin-left: auto;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.overview-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background var(--dur-hover) var(--ease-out);
+}
+.overview-card:hover {
+  background: var(--surface-soft);
+}
+.overview-card-selected {
+  border-color: var(--violet);
+  box-shadow: inset 0 0 0 1px var(--violet);
+}
+/* U2 alarm, per board: the same red chrome as the tab, independent of accent. */
+.overview-card-error {
+  background: var(--error-bg);
+  border-color: var(--error-ink);
+  color: var(--error-ink);
+}
+.overview-card-error:hover {
+  background: color-mix(in srgb, var(--error-bg) 75%, var(--error-ink) 8%);
+}
+
+.overview-card-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.overview-card-title {
+  font-weight: 700;
+  font-size: 14.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.overview-error-tag {
+  margin-left: auto;
+  flex: none;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--error-ink);
+  color: var(--paper);
+}
+.overview-card-error .tab-dot {
+  animation: lw-stale-blink 900ms steps(2, jump-none) infinite;
+}
+
+.overview-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.overview-card-error .overview-card-meta {
+  color: var(--error-ink);
+}
+.overview-status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.overview-age {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.overview-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+.overview-card-error .overview-track {
+  background: color-mix(in srgb, var(--error-ink) 24%, transparent);
+}
+.overview-fill {
+  display: block;
+  height: 100%;
+  background: var(--violet);
+}
+.overview-card-error .overview-fill {
+  background: var(--error-ink);
+}
+.overview-ind,
+.overview-badge {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-muted);
+}
+.overview-card-error .overview-ind,
+.overview-card-error .overview-badge {
+  color: var(--error-ink);
+}
+
+/* Reduced motion: every shell animation AND transition is disabled. Covers the
+   breathing live dot, the blinking error/overview dots, the update pulse,
+   the pull/empty spinner, and the hover/pull transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .fresh-chip-live .fresh-dot,
+  .error-banner-dot,
+  .tab-error .tab-dot,
+  .overview-card-error .tab-dot,
+  .board-pulse,
+  .spinner.spinning {
+    animation: none;
+  }
+  .icon-btn,
+  .tab,
+  .overview-card,
+  .pull-indicator {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------- keyboard focus */
+
+/* A visible ring on every interactive control, drawn OUTSIDE the control
+   (outline-offset) so it reads on the paper background, on a filled/selected
+   tab, and on a card. The browser default is not relied upon: some of these
+   controls carry their own background and would otherwise lose the ring. */
+button:focus-visible,
+[role='tab']:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------- breakpoints
+   Three bands, verified by measurement at 390x844 (phone), 820x1180 (tablet)
+   and 1280x800 (desktop):
+
+     - phone   : max-width 600px
+     - tablet  : 601px - 1024px
+     - desktop : min-width 1025px
+
+   The tablet band needs no overrides: the desktop layout already fits, so it
+   is defined by the absence of the phone rules. On the phone band the app bar
+   and its right-hand group are allowed to WRAP, which is what removes the
+   horizontal overflow (a nowrap chip + count + buttons did not fit in 390px),
+   and the chrome gets larger touch targets and tighter padding. Nothing here
+   touches kiosk's board scaling except to drop the 1.2x zoom on a phone, where
+   it would only make an already small screen harder to read. */
+
+@media (max-width: 600px) {
+  .appbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .appbar-title {
+    font-size: 18px;
+    min-width: 0;
+  }
+  .appbar-right {
+    flex-wrap: wrap;
+    gap: 6px;
+    min-width: 0;
+  }
+  .appbar-actions {
+    gap: 2px;
+  }
+  /* The count is redundant once the overview button is in the bar. */
+  .appbar-count {
+    display: none;
+  }
+  .appbar-status {
+    min-width: 0;
+  }
+  .fresh-chip {
+    font-size: 11.5px;
+    padding: 4px 8px;
+  }
+  /* Touch targets: >=40px, up from the 34px desktop chrome. */
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+  }
+  .tabs {
+    gap: 6px;
+    padding: 8px 10px 10px;
+  }
+  .tab {
+    min-height: 42px;
+    padding: 11px 12px;
+    font-size: 12.5px;
+  }
+  .tab-label {
+    max-width: 120px;
+  }
+  .board {
+    padding: 12px 12px 24px;
+  }
+  .board-kiosk {
+    zoom: 1;
+    padding: 14px 14px 32px;
+  }
+  .error-banner {
+    padding: 11px 12px;
+    font-size: 13px;
+  }
+  .overview-backdrop {
+    padding: 12px 10px;
+  }
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

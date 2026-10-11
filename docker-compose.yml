@@ -1,0 +1,43 @@
+services:
+  livewall:
+    build: .
+    image: livewall
+    container_name: livewall
+    ports:
+      # host:container — change the host side if 8470 is taken
+      - "${LIVEWALL_PORT:-8470}:8470"
+    environment:
+      # LITERAL 0.0.0.0, deliberately not ${LIVEWALL_HOST}. A process bound to
+      # 127.0.0.1 inside a container is unreachable from the host even with a
+      # published port (Docker forwards to the container's interface, not its
+      # loopback). Substituting here would let a copied .env.example — which
+      # sets 127.0.0.1 for bare-metal runs — silently break the container.
+      LIVEWALL_HOST: 0.0.0.0
+      # The container always listens on 8470; the host-side port is the
+      # ${LIVEWALL_PORT} in the `ports:` mapping above.
+      LIVEWALL_PORT: 8470
+      LIVEWALL_DEFAULT_TTL: ${LIVEWALL_DEFAULT_TTL:-1800}
+      LIVEWALL_STALE_TTL: ${LIVEWALL_STALE_TTL:-3600}
+      LIVEWALL_MAX_BOARDS: ${LIVEWALL_MAX_BOARDS:-12}
+      LIVEWALL_LOG_LEVEL: ${LIVEWALL_LOG_LEVEL:-warning}
+      LIVEWALL_CONFIG_FILE: /data/config.json
+      # Optional bearer-token auth. Empty/unset keeps the quickstart open.
+      # This line must exist: compose reads `.env` only to substitute `${...}`
+      # here, and does NOT inject it into the container on its own — without
+      # this passthrough a token set in `.env` is silently dropped and the
+      # published API stays open.
+      LIVEWALL_TOKEN: ${LIVEWALL_TOKEN:-}
+    volumes:
+      # keeps runtime config across container recreation
+      - livewall-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8470/health',timeout=3).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  livewall-data:

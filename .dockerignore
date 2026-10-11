@@ -1,0 +1,33 @@
+# Build context exclusions for the Livewall image.
+# The Dockerfile builds the client from source (npm ci) and installs the backend
+# from requirements.txt, so no local dependency tree or build output is needed.
+
+# --- vcs / editors ---------------------------------------------------------
+.git
+.idea/
+.vscode/
+*.swp
+
+# --- node ------------------------------------------------------------------
+**/node_modules
+web/dist
+*.tsbuildinfo
+
+# --- python ----------------------------------------------------------------
+**/__pycache__
+**/*.py[cod]
+.venv
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- runtime state / local config -----------------------------------------
+.env
+.env.*
+backend/config.json
+backend/logs/
+
+# --- test temp output ------------------------------------------------------
+shots/
+**/shots/
+web/shots/

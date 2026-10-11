@@ -1,0 +1,7 @@
+# The MCP server's dependencies, pinned exactly so `make install` and the
+# manual venv in mcp/README.md build the same set forever. pydantic is a direct
+# import (mcp/server.py) as well as a fastmcp dependency, so it is pinned here
+# too. Enforced by scripts/check_deps.py via `make test`.
+fastmcp==4.0.11
+httpx==0.28.1
+pydantic==2.14.0

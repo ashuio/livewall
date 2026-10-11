@@ -1,0 +1,36 @@
+# --- environment / secrets -------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- node ------------------------------------------------------------------
+node_modules/
+web/dist/
+web/.dist-staging/
+web/dist.old/
+web/shots/
+*.tsbuildinfo
+
+# --- backend runtime state -------------------------------------------------
+backend/config.json
+backend/logs/
+
+# --- test artifacts --------------------------------------------------------
+shots/
+
+# --- editors / os ----------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.#*
+.idea/
+.vscode/

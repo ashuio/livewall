@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push supersedes an in-flight run on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          # Matches the Dockerfile's runtime; the CLI package declares >=3.9.
+          python-version: '3.12'
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          # Matches the Dockerfile. The web unit tests need Node >=22.6 for
+          # `--experimental-strip-types`.
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      # `make install` runs `playwright install chromium`, which fetches the
+      # browser but NOT the OS libraries it links against. Those are present on
+      # a developer box but not on a bare runner, so the browser suites would
+      # die at launch. Cache the download, then install the system deps.
+      - name: Cache the Playwright browser
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('Makefile') }}
+          restore-keys: playwright-${{ runner.os }}-
+
+      - name: Install
+        run: make install
+
+      - name: Install browser system dependencies
+        run: .venv/bin/playwright install --with-deps chromium
+
+      - name: Test
+        run: make test
+
+      - name: Lint (client)
+        run: cd web && npm run lint
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the image
+        run: docker build -t livewall:ci .

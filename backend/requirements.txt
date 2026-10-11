@@ -1,0 +1,4 @@
+# Pinned exactly: a `make install` today must resolve to the same set in six
+# months (see scripts/check_deps.py, enforced by `make test`).
+fastapi==0.143.0
+uvicorn==0.54.0

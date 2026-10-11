@@ -1,0 +1,524 @@
+/* Livewall block components — the Daylight look, driven entirely by the CSS
+   custom properties in tokens.css so light/dark needs no JS. */
+
+:root {
+  --accent-violet: var(--violet);
+  --accent-pink: var(--pink);
+  --accent-lime: var(--lime);
+  --accent-mint: var(--mint);
+  --accent-muted: var(--ink-muted);
+  --accent-ok: var(--success-ink);
+  --accent-warn: var(--warning-ink);
+  --accent-error: var(--error-ink);
+}
+
+/* ------------------------------------------------------------------ panel */
+
+.lw-panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-card);
+}
+
+.lw-tone-ok {
+  background: var(--success-bg);
+  border-color: var(--success-bg);
+  color: var(--success-ink);
+}
+.lw-tone-warn {
+  background: var(--warning-bg);
+  border-color: var(--warning-bg);
+  color: var(--warning-ink);
+}
+.lw-tone-error {
+  background: var(--error-bg);
+  border-color: var(--error-bg);
+  color: var(--error-ink);
+}
+.lw-tone-info {
+  background: var(--violet-soft);
+  border-color: var(--violet-soft);
+  color: var(--violet);
+}
+
+/* ------------------------------------------------------------------- text */
+
+.lw-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.lw-muted {
+  color: var(--ink-muted);
+  font-size: 12.5px;
+}
+.lw-mono {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+.lw-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+.lw-mb {
+  margin-bottom: 10px;
+}
+.lw-empty {
+  padding: 12px 0;
+  text-align: center;
+}
+
+/* A plain `text` block, and the board's own title/subtitle header. */
+.lw-body-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.lw-board-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.3px;
+  margin: 2px 0 4px;
+  color: var(--ink);
+}
+.lw-board-subtitle {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0 0 12px;
+}
+
+.lw-row-between {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* ---------------------------------------------------------------- heading */
+
+.lw-heading {
+  padding: 4px 0 10px;
+}
+.lw-eyebrow {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  color: var(--violet);
+}
+.lw-heading-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  /* The heading is an h2 (a11y): drop the UA's default block margins so the
+     render matches the styled div it replaced. */
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------- chips */
+
+.lw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.lw-chip {
+  background: var(--surface-soft);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+.lw-chip-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  color: var(--ink-muted);
+}
+.lw-chip-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ink);
+  margin-top: 3px;
+}
+.lw-chip-unit {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  margin-left: 3px;
+}
+
+/* ------------------------------------------------------------- track/fill */
+
+.lw-track {
+  flex: 1;
+  height: 12px;
+  background: var(--surface-soft);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: 10px;
+}
+.lw-fill {
+  height: 100%;
+  background: var(--violet);
+  border-radius: var(--radius-pill);
+  transition: width 200ms var(--ease-out);
+}
+.lw-pct {
+  text-align: right;
+  color: var(--violet);
+  font-size: 11.5px;
+  margin-top: 6px;
+}
+
+/* ----------------------------------------------------------------- gauge */
+
+.lw-gauge {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+.lw-gauge-center {
+  position: absolute;
+  left: 0;
+  width: 84px;
+  text-align: center;
+  font-size: 18px;
+}
+.lw-gauge-legend {
+  flex: 1;
+}
+
+/* ------------------------------------------------------------------ bars */
+
+.lw-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+}
+.lw-bar-label {
+  width: 96px;
+  flex: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lw-bar-row .lw-track {
+  margin-top: 0;
+}
+.lw-bar-value {
+  width: 78px;
+  flex: none;
+  text-align: right;
+  color: var(--ink);
+}
+
+/* -------------------------------------------------------------- sparkline */
+
+.lw-spark-wrap {
+  height: 64px;
+  position: relative;
+}
+.lw-spark {
+  width: 100%;
+  height: 64px;
+  display: block;
+  cursor: crosshair;
+  /* Horizontal finger movement scrubs the chart; vertical pans still belong
+     to the board scroller (touch-action: pan-y). Without this the browser
+     claims ANY touch drag as a scroll-pan gesture and pointercancels it after
+     a couple of moves — the scrub readout then freezes at the touch-down
+     point instead of tracking the finger. pan-y preserves the scroller's
+     vertical scrolling AND pull-to-refresh (both vertical gestures). */
+  touch-action: pan-y;
+}
+.lw-spark-cursor {
+  pointer-events: none;
+}
+.lw-spark-tip {
+  top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------- line */
+
+/* A multi-series line chart: hand-rolled SVG with a y-axis gutter, x labels
+   and an optional legend. Height is fixed so the viewBox scales crisply. */
+.lw-line-wrap {
+  min-height: 170px;
+  position: relative;
+}
+.lw-line {
+  width: 100%;
+  height: 170px;
+  display: block;
+  cursor: crosshair;
+  /* Same as .lw-spark: pan-y keeps the scrub gesture (horizontal) on the
+     chart and vertical pans on the board scroller. */
+  touch-action: pan-y;
+}
+.lw-line-cursor {
+  pointer-events: none;
+}
+/* Hover readout. Positioned in CSS px over the measured chart width, so it
+   tracks the point without the SVG having to size text. */
+.lw-line-tip {
+  position: absolute;
+  top: 2px;
+  z-index: 2;
+  pointer-events: none;
+  margin-left: 8px;
+  padding: 6px 9px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-card);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+.lw-line-tip-x {
+  margin-bottom: 3px;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.lw-line-tip-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.lw-line-tip-row b {
+  margin-left: auto;
+  padding-left: 10px;
+  font-variant-numeric: tabular-nums;
+}
+.lw-line-tick {
+  fill: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+.lw-line-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 10px;
+}
+.lw-line-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+}
+.lw-line-swatch {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  display: inline-block;
+  flex: none;
+}
+
+/* ----------------------------------------------------------------- table */
+
+.lw-tr {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lw-thead {
+  border-bottom: none;
+  padding-bottom: 8px;
+}
+.lw-th {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  color: var(--ink-muted);
+}
+.lw-td {
+  font-size: 13.5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Narrow viewports: a table cannot keep three columns on one line without
+   starving them, and `nowrap` + `overflow: hidden` then hides data with no
+   cue — a tag pill is an inline-block child, so the cell's own
+   `text-overflow: ellipsis` never applies to it and the text is cut mid-word.
+   Let the cells wrap instead: rows get taller, nothing is hidden, and the
+   pill breaks inside long values rather than overflowing the panel. */
+@media (max-width: 600px) {
+  .lw-td {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+  }
+  .lw-td .lw-pill {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .lw-th {
+    white-space: normal;
+  }
+}
+
+.lw-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.lw-pill-ok {
+  background: var(--success-bg);
+  color: var(--success-ink);
+}
+.lw-pill-run {
+  background: var(--violet-soft);
+  color: var(--violet);
+}
+.lw-pill-error {
+  background: var(--error-bg);
+  color: var(--error-ink);
+}
+.lw-pill-warn {
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+}
+.lw-pill-muted {
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------------- log */
+
+.lw-log {
+  background: var(--surface-soft);
+  border-radius: var(--radius-control);
+  padding: 12px;
+  max-height: 240px;
+  overflow: auto;
+  line-height: 1.5;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* The copy button on a `code` block. Always visible rather than hover-revealed:
+   a control nobody discovers is not an affordance, and touch has no hover at
+   all. It stays quiet so it does not compete with the code, and each result is
+   stated in words as well as colour (the `Copy failed` label), so the state is
+   never carried by colour alone. The focus ring comes from the global
+   `button:focus-visible` rule. */
+.lw-copy {
+  flex: none;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--dur-hover) var(--ease-out),
+              border-color var(--dur-hover) var(--ease-out);
+}
+
+.lw-copy:hover {
+  color: var(--ink);
+  border-color: var(--violet);
+}
+
+.lw-copy[data-state='copied'] {
+  color: var(--success-ink);
+  border-color: var(--success-ink);
+}
+
+.lw-copy[data-state='failed'] {
+  color: var(--error-ink);
+  border-color: var(--error-ink);
+}
+
+/* Phone band: match the app bar's larger touch target. */
+@media (max-width: 600px) {
+  .lw-copy {
+    min-height: 42px;
+    padding: 0 14px;
+  }
+}
+
+/* -------------------------------------------------------------------- kv */
+
+.lw-kv-row {
+  padding: 6px 0;
+}
+
+/* ------------------------------------------------------------------ list */
+
+.lw-list-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: 14px;
+}
+.lw-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--violet);
+  margin-top: 7px;
+  flex: none;
+}
+
+/* --------------------------------------------------------------- callout */
+
+.lw-callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.lw-callout-bar {
+  width: 4px;
+  min-height: 20px;
+  align-self: stretch;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+}
+.lw-callout-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------- divider */
+
+.lw-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 16px 0;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+/* The board content is out of scope for restyling, but its one transition is
+   motion, not look: a motion-sensitive viewer should not see progress bars
+   sweep when a value changes. Disabling the transition only removes the
+   animation; the fill still lands on the new value. */
+@media (prefers-reduced-motion: reduce) {
+  .lw-fill {
+    transition: none;
+  }
+}

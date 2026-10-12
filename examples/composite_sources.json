@@ -1,0 +1,67 @@
+{
+  "_comment": "A pusher config showing COMPOSITE sources, multi-field `sources` and a live tab indicator. Every block reads from examples/composite_probe.py, which prints ONE JSON object per tick — so the expensive sampling happens once, not once per block. Run from the repo root: python3 examples/pusher.py examples/composite_sources.json",
+
+  "board": "composite-demo",
+  "title": "Composite sources",
+  "subtitle": "one source can drive a whole list — stats, bar, kv",
+  "interval": 10,
+  "ttl": 300,
+
+  "tab": {
+    "label": "host",
+    "accent": "violet",
+    "indicator": {
+      "kind": "bar",
+      "value": 0,
+      "max": 100,
+      "source": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.used_pct" } }
+    }
+  },
+
+  "blocks": [
+    { "type": "heading", "id": "h", "text": "One source, a whole list",
+      "eyebrow": "examples/composite_sources.json" },
+
+    { "type": "callout", "id": "status", "text": "sampling…", "tone": "info",
+      "sources": {
+        "text": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.line" } },
+        "tone": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.tone" } }
+      } },
+
+    { "type": "progress", "id": "disk", "label": "Disk used", "max": 100, "unit": "%",
+      "source": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.used_pct" } } },
+
+    { "type": "gauge", "id": "load", "label": "Load 1m", "max": 8.0, "color": "mint",
+      "source": { "kind": "file", "path": "/proc/loadavg",
+                  "extract": { "regex": "^([0-9.]+)" } } },
+
+    { "type": "stats", "id": "tiles", "items": [],
+      "source": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.tiles" } } },
+
+    { "type": "bar", "id": "bars", "label": "By resource", "color": "violet",
+      "data": [],
+      "source": { "kind": "command",
+                  "argv": ["python3", "examples/composite_probe.py"],
+                  "extract": { "path": "$.bars" } } },
+
+    { "type": "kv", "id": "detail",
+      "items": [["Path", "…"], ["Load 1m", "…"], ["Memory used", "…"]],
+      "sources": {
+        "items": { "kind": "command",
+                   "argv": ["python3", "examples/composite_probe.py"],
+                   "extract": { "path": "$.detail" } }
+      } },
+
+    { "type": "log", "id": "log", "title": "poller.log", "lines": [] }
+  ]
+}

@@ -105,22 +105,98 @@ name and the block keeps its last good value.
 
 ### Where the value lands
 
-By default a source writes the block's `value`. Override with `"field"`:
+By default a source writes the block's own field for its type:
 
-| Block type | Default field |
-|---|---|
-| `progress`, `gauge`, `stat` | `value` |
-| `text`, `callout`, `heading` | `text` |
+| Block type | Default field | Shape |
+|---|---|---|
+| `progress`, `gauge`, `stat` | `value` | scalar |
+| `text`, `callout`, `heading`, `code` | `text` | scalar |
+| `stats`, `kv`, `list` | `items` | **list** |
+| `bar` | `data` | **list** |
+| `table` | `rows` | **list** |
+| `sparkline`, `chart` | `values` | **list** |
+| `line` | `series` | **list** |
+| `log` | `lines` | **list** |
 
-`progress` and `gauge` need a **number** — a non-numeric sample is an error, not a
-silent zero. A JSON `true`/`false` is coerced to the strings `"true"`/`"false"`,
-because the block vocabulary takes scalars and a boolean is not one.
+Override the field with `"field"`. **Every block type with a field is
+source-drivable** — only `divider` has none.
 
-The table above is the default, not the rule: each of those types has a
-single-value field a sample can land in. A `source` on any *other* type is a
-named error in the `log` block — unless the block names the field itself with an
-explicit `field`, in which case any type can take a source. The block is pushed
-as written either way.
+A source supplies a **value** into a field the config already declared; it can
+never add a field or a block type. That split is what keeps a compromised
+endpoint from reshaping the board.
+
+**Scalars** (`value`/`text`) take a string or number. `progress` and `gauge` need
+a **number** — a non-numeric sample (a string that will not parse, a JSON bool,
+anything nested) is an error, not a silent zero or a `"true"` string the backend
+would 400 the whole board over. A JSON `true`/`false` on other types is coerced
+to the strings `"true"`/`"false"`, because the block vocabulary takes scalars and
+a boolean is not one. A number the backend cannot store exactly (beyond ±2⁵³) or
+that is not finite is an error too.
+
+**Composite fields** (`items`/`data`/`rows`/`values`/`series`/`lines`/`xLabels`)
+take a
+whole **JSON list**. The pusher checks the entries against the same shapes the
+backend's validator enforces — objects for `stats`, `[key, value]` pairs for
+`kv`/`bar`, cell lists for `table` rows, numbers for the charts — so a null, a
+nested list, a bool or an overlong string inside an entry is a named source
+error, never a 400 that kills the whole board. This is how a `stats` block gets
+a live set of tiles from one endpoint:
+
+```jsonc
+{ "type": "stats", "id": "tiles", "items": [],
+  "source": { "kind": "http", "url": "http://127.0.0.1:9000/stats",
+              "extract": { "path": "$.tiles" } } }
+```
+
+A scalar into a composite field (or a list into a scalar field) is a named
+source error, never a value smuggled into a field the backend would 400 the whole
+board over. A composite list is capped at **200 entries** and **256 KiB
+serialised** for the same reason — one runaway array must fail its own source,
+not the push.
+
+There is a runnable config that shows all of this:
+[`examples/composite_sources.json`](../examples/composite_sources.json) with its
+probe [`examples/composite_probe.py`](../examples/composite_probe.py) — one
+source fills a `stats`, a `bar` and a `kv`, a `sources` map drives two fields of
+a callout, and the tab indicator is live.
+
+### Driving several fields of one block — `sources`
+
+A block's `source` binds one field. To drive more than one — a callout's `text`
+*and* its `tone`, say — use `sources`, a field -> source map:
+
+```jsonc
+{ "type": "callout", "id": "status", "text": "…", "tone": "info",
+  "sources": {
+    "text": { "kind": "command", "argv": ["…"], "extract": { "path": "$.line" } },
+    "tone": { "kind": "command", "argv": ["…"], "extract": { "path": "$.tone" } } } }
+```
+
+Both forms may be present (`sources` wins on a field both name). Every bound
+field must be one the block's type actually allows — `sources` naming anything
+else would push an invented field the backend refuses, 400ing the whole board,
+so it is a named source error instead. Each field keeps its **own** last good
+value, so one dead source blanks only its own field.
+
+### A live tab indicator
+
+A board's `tab.indicator` can carry a `source` of its own, so the tab's mini-bar
+tracks a real ratio instead of a hardcoded number:
+
+```jsonc
+"tab": { "label": "h", "accent": "violet",
+         "indicator": { "kind": "bar", "value": 0, "max": 100,
+                        "source": { "kind": "command", "argv": ["…"],
+                                    "extract": { "path": "$.indicator" } } } }
+```
+
+The resolved value must be numeric (a bar/pct needs a ratio); a dead or
+non-numeric source leaves the placeholder value and names the error in the log —
+and if there is no numeric placeholder to keep, the indicator is dropped rather
+than pushed in a shape the backend would refuse. **Note:** the client
+only draws the tab bar when a board has **more than one** board to switch
+between, so on a single-board wall the indicator is not visible — put anything
+you need seen in a block.
 
 ## When a source fails
 

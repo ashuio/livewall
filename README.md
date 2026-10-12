@@ -351,14 +351,14 @@ The counts below are what a full run prints on a clean checkout:
 | `backend/tests/config_persist_test.py` | 58 config round-trip and fallback cases |
 | `backend/tests/auth_test.py` | 22 auth-gate cases (enforcement in both directions: open, 401, accepted, every method, `/health` liveness-only when unauthenticated, static exempt) |
 | `backend/tests/store_concurrency_test.py` | 3 store-concurrency cases (route handlers never mutate the store off the event loop) |
-| `backend/tests/pusher_test.py` | 20 checks on `examples/pusher.py`'s value-resolution path (pure functions, no backend needed) |
+| `backend/tests/pusher_test.py` | 70 checks on `examples/pusher.py`'s value-resolution path, including a run of every board it builds through the backend's own validator (pure functions, no backend needed) |
 | `backend/tests/vocab_parity_test.py` | 92 vocabulary-parity checks (the MCP tool descriptions and the client renderer read exactly what `contract.py` declares) |
 | `cli/test_cli.py` | 51 CLI end-to-end checks (every command, collision, bad input, token, unreachable backend) |
 | `mcp/test_live.py` | 43 MCP contract + lifecycle checks (11 tools) |
 | `web/test/*.test.ts` | 67 Node unit tests on a fake clock (transport, number formatting, token resolution, freshness/TTL) |
-| `web/scripts/verify_render.py` | 59 rendered strings across all 17 block types, both themes, 15 component classes |
+| `web/scripts/verify_render.py` | 60 rendered strings across all 17 block types, both themes, 16 component classes |
 | `web/scripts/verify_transport.py` | 98 browser transport/lifecycle checks |
-| `web/scripts/verify_a11y.py` | 34 accessibility checks (roles and names, keyboard operation, focus, contrast, reduced motion, reflow) |
+| `web/scripts/verify_a11y.py` | 46 accessibility checks (roles and names, keyboard operation, focus, contrast, reduced motion, reflow, clipboard) |
 
 Two details worth knowing:
 

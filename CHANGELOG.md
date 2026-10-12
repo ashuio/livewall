@@ -4,6 +4,49 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.2] - 2026-10-12
+
+### Added
+
+- **Composite sources for pushers.** A source could previously write only a
+  single scalar field, so a `stats`, `bar`, `table`, `kv` or chart block could
+  not be driven at all. A source now takes its block's own field by default, and
+  the list-valued fields (`items`, `data`, `rows`, `values`, `series`, `lines`,
+  `xLabels`) accept a whole JSON **list** — so one endpoint fills a `stats` tile
+  set, a `bar` and a `kv` in a single call. See
+  [`docs/pushers.md`](docs/pushers.md).
+- **`sources` — several fields from one block.** A block may declare a
+  field → source map to drive more than one field at once (a callout's `text`
+  *and* its `tone`, for example). Each field keeps its own last good value, so a
+  single dead source blanks only its own field.
+- **A live tab indicator.** `tab.indicator` accepts a `source` of its own, so a
+  tab's mini-bar can track a real ratio instead of a hardcoded number.
+- **A runnable composite example**: `examples/composite_sources.json` with the
+  single-JSON-object probe `examples/composite_probe.py`.
+
+### Fixed
+
+- **A pusher source can no longer emit a board the backend refuses.** A rejected
+  board is lost whole, so every source path is now checked before it is pushed:
+  a `sources` or `field` key naming a field the block type does not allow, a
+  config-only `field` key leaking into the block, a malformed entry inside a
+  composite list (a null, a nested list, a boolean, a wrong shape, an overlong
+  string), a boolean where a numeric block needs a number, an integer beyond
+  `2**53` or a non-finite float, and a composite list whose serialised size
+  exceeds 256 KiB are each a **named source error** rather than a lost board.
+- **A source-driven `log` block keeps its lines.** The guard that was meant to
+  leave such a block alone tested the wrong value, so the poller's own log lines
+  silently replaced the ones the source supplied.
+- **Tab-indicator errors are visible in the same tick**, and an indicator whose
+  source dies without a numeric fallback is dropped rather than pushed in an
+  invalid shape.
+
+### Changed
+
+- `examples/pusher.py`'s resolution path is pinned by a larger suite
+  (`backend/tests/pusher_test.py`), which now runs every board it builds through
+  the backend's own validator.
+
 ## [0.0.1] - 2026-10-11
 
 The first release. Livewall is an agent-programmable live status surface: an
